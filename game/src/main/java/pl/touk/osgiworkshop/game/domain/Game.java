@@ -8,6 +8,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import pl.touk.osgiworkshop.game.base.InitState;
 import pl.touk.osgiworkshop.game.base.behave.DoNothing;
+import pl.touk.osgiworkshop.game.base.behave.EndTheGame;
 import pl.touk.osgiworkshop.game.base.behave.MoveToPlace;
 
 import java.io.BufferedReader;
@@ -25,14 +26,17 @@ public class Game {
     private Player player;
     private Creature currentCreature;
     private Interface io;
+    private boolean gameEnd;
 
     public void start() {
         currentState.introduce();
         Behaviour behaviour = currentState.execute(null, null); // what is first step in game?
-        do {
-            behaviour.execute(this);
+        behaviour.execute(this);
+        while (!gameEnd) {
             behaviour = readAction();
-        } while (true);
+            behaviour.execute(this);
+        }
+        printOutLine("KONIEC GRY");
     }
 
     private Behaviour readAction() {
@@ -46,8 +50,7 @@ public class Game {
             printErrLine("Wołasz o pomoc głupcze?!");
             showAvailableActions();
         } else if (Sets.newHashSet("wyjdź", "wyjście", "koniec").contains(arr[0])) {
-            printOutLine("KONIEC GRY");
-            System.exit(0);
+            return new EndTheGame();
         } else {
             try {
                 return currentState.execute(arr[0], Arrays.asList(arr).subList(1, arr.length));
@@ -65,6 +68,10 @@ public class Game {
 
     public Name getPlayersName() {
         return player.getName();
+    }
+
+    public void endTheGame() {
+        this.gameEnd = true;
     }
 
     // PLACES

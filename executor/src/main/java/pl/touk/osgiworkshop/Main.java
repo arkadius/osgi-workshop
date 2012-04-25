@@ -77,12 +77,17 @@ public class Main
 
     private Framework m_fwk = null;
 
-    public void start() throws Exception
+    public void start(boolean withGogo) throws Exception
     {
         // Look for bundle directory and/or cache directory.
         // We support at most one argument, which is the bundle
         // cache directory.
         String bundleDir = null;
+        if (!withGogo) {
+            File tempBundleDir = new File(FileUtils.getTempDirectory(), "osgiworkshop-bundle");
+            tempBundleDir.mkdir();
+            bundleDir = tempBundleDir.getPath();
+        }
         File tempCache = new File(FileUtils.getTempDirectory(), "osgiworkshop-cache");
         if (tempCache.exists()) {
             FileUtils.deleteDirectory(tempCache);

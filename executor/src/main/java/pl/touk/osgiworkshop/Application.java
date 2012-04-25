@@ -17,11 +17,14 @@ public class Application {
 
     public static void main(String[] args) throws Exception {
         Main main = new Main();
-        main.start();
+        main.start(false);
         Framework framework = main.getFramework();
         Thread.sleep(2000);
-        startBundle(framework, "pong/target/pong-1.0.jar");
-        startBundle(framework, "ping/target/ping-1.0.jar");
+//        startBundle(framework, "pong/target/pong-1.0.jar");
+//        startBundle(framework, "ping/target/ping-1.0.jar");
+
+        startBundle(framework, "game/target/dependency/guava-osgi-11.0.1.jar");
+        startBundle(framework, "game/target/game-1.0.jar");
         System.exit(0);
     }
 
