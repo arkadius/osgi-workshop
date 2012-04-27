@@ -74,5 +74,19 @@ class World {
         this.creatures.addAll(creatures);
     }
 
+    // SPRING
+
+    public void setPlaces(Collection<? extends Place> places) {
+        addPlaces(places);
+    }
+
+    public void setCreatures(SortedSet<Creature> creatures) {
+        this.creatures = creatures;
+    }
+
+    public Collection<? extends Place> getPlaces() {
+        return places.values();
+    }
+
     // TODO: add methods to remove
 }

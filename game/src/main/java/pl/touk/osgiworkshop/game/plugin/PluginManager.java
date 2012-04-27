@@ -4,43 +4,37 @@
  */
 package pl.touk.osgiworkshop.game.plugin;
 
-import org.osgi.framework.*;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.osgi.service.importer.OsgiServiceLifecycleListener;
 import pl.touk.osgiworkshop.game.domain.Game;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author arkadius
  */
-public class PluginManager implements ServiceTrackerCustomizer<Plugin, Plugin> {
-
+public class PluginManager implements OsgiServiceLifecycleListener {
+    private static final Logger log = LoggerFactory.getLogger(PluginManager.class);
     private Game game;
-    private BundleContext bundleContext;
 
-    public PluginManager(Game game, BundleContext bundleContext) {
+    public PluginManager(Game game) {
         this.game = game;
-        this.bundleContext = bundleContext;
     }
 
-
-
-    public Plugin addingService(ServiceReference<Plugin> pluginServiceReference) {
-        Plugin plugin = bundleContext.getService(pluginServiceReference);
-        addPlugin(plugin);
-        return plugin;
+    @Override
+    public void bind(Object service, Map properties) throws Exception {
+        addPlugin((Plugin) service);
     }
 
-    public void modifiedService(ServiceReference<Plugin> pluginServiceReference, Plugin plugin) {
-        // TODO ?
-    }
-
-    public void removedService(ServiceReference<Plugin> pluginServiceReference, Plugin plugin) {
-        removePlugin(plugin);
-        bundleContext.ungetService(pluginServiceReference);
+    @Override
+    public void unbind(Object service, Map properties) throws Exception {
+        removePlugin((Plugin) service);
     }
 
     public void addPlugin(Plugin plugin) {
-        System.out.println("Plugin został zainstalowany: " + plugin.getName());
+        log.info("Plugin został zainstalowany: " + plugin.getName());
         game.addPlaces(plugin.getPlaces());
         game.addStates(plugin.getAdditionalStates());
         game.addCreatures(plugin.getCreatures());
@@ -48,8 +42,7 @@ public class PluginManager implements ServiceTrackerCustomizer<Plugin, Plugin> {
 
 
     private void removePlugin(Plugin plugin) {
-        System.out.println("Plugin został odinstalowany: " + plugin.getName());
+        log.info("Plugin został odinstalowany: " + plugin.getName());
         // TODO
     }
-
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
+ * TODO: remove this class - now we are using property placeholders
  * @author arkadius
  */
 public class Config {

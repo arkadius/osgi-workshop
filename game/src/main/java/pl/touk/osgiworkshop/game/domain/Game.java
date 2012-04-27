@@ -32,7 +32,7 @@ public class Game {
     private Interface io;
     private boolean gameEnd;
 
-    Game() {}
+    public Game() {}
 
     public void start() {
         currentState.introduce();
@@ -167,7 +167,7 @@ public class Game {
 
     // MUTATORS / ACCESSORS
 
-    void setPlayer(Player player) {
+    public void setPlayer(Player player) {
         this.player = player;
     }
 
@@ -192,6 +192,17 @@ public class Game {
     public Player getPlayer() {
         return player;
     }
+
+    // SPRING
+
+    public void setWorld(World world) {
+        this.world = world;
+        for (Place place : world.getPlaces()) {
+            addState(place.getAssociatedState());
+        }
+    }
+
+
 
     // TODO: add methods to remove
 

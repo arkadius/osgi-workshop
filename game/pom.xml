@@ -10,65 +10,71 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>game</artifactId>
+    <packaging>bundle</packaging>
+
+    <properties>
+        <bundle.symbolicName>${project.groupId}-${project.artifactId}-bundle</bundle.symbolicName>
+    </properties>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Bundle-Activator>pl.touk.osgiworkshop.game.GameApplication</Bundle-Activator>
-                            <Import-Package>
-                                org.osgi.framework,
-                                org.osgi.util.tracker,
-                                com.google.common.base,
-                                com.google.common.collect
-                            </Import-Package>
-                            <Export-Package>
-                                pl.touk.osgiworkshop.game,
-                                pl.touk.osgiworkshop.game.base,
-                                pl.touk.osgiworkshop.game.base.behave,
-                                pl.touk.osgiworkshop.game.plugin,
-                                pl.touk.osgiworkshop.game.domain
-                            </Export-Package>
-                        </manifestEntries>
-                    </archive>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>install</phase>
-                        <configuration>
-                            <includeScope>runtime</includeScope>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.ops4j</groupId>
+                <artifactId>maven-pax-plugin</artifactId>
+                <version>1.5</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Bundle-Vendor>TouK</Bundle-Vendor>
+                        <!--<Import-Package>*</Import-Package>-->
+                        <!--<Export-Package>*</Export-Package>-->
+                    </instructions>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.main</artifactId>
-            <version>4.0.2</version>
-        </dependency>
         <!--<dependency>-->
-            <!--<groupId>com.google.guava</groupId>-->
-            <!--<artifactId>guava</artifactId>-->
-            <!--<version>12.0-rc1</version>-->
+            <!--<groupId>org.apache.felix</groupId>-->
+            <!--<artifactId>org.apache.felix.main</artifactId>-->
+            <!--<version>3.0.9</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>com.googlecode.guava-osgi</groupId>
             <artifactId>guava-osgi</artifactId>
             <version>11.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>3.0.7.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.osgi</groupId>
+            <artifactId>spring-osgi-core</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.4</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

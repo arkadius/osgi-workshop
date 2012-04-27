@@ -15,6 +15,7 @@
         <module>executor</module>
         <module>game</module>
         <module>plugin</module>
+        <module>features</module>
     </modules>
 
     

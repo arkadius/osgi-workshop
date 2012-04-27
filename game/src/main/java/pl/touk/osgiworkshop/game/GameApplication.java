@@ -4,30 +4,20 @@
  */
 package pl.touk.osgiworkshop.game;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import pl.touk.osgiworkshop.game.base.BasePlace;
 import pl.touk.osgiworkshop.game.base.BaseWeapon;
 import pl.touk.osgiworkshop.game.console.ConsoleInterface;
 import pl.touk.osgiworkshop.game.domain.*;
-import pl.touk.osgiworkshop.game.plugin.Plugin;
-import pl.touk.osgiworkshop.game.plugin.PluginManager;
 
 import java.util.Collections;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 /**
  * @author arkadius
  */
-public class GameApplication implements BundleActivator {
+public class GameApplication {
 
-    private ServiceTracker<Plugin,Plugin> tracker;
+//    private ServiceTracker<Plugin,Plugin> tracker;
 
     public static void main(String[] args) {
         Game game = createGame();
@@ -53,21 +43,21 @@ public class GameApplication implements BundleActivator {
         return game;
     }
 
-    public void start(BundleContext bundleContext) throws Exception {
-        final Game game = createGame();
-        tracker = new ServiceTracker<Plugin, Plugin>(bundleContext, Plugin.class, new PluginManager(game, bundleContext));
-        tracker.open();
-        new Thread() {
-            @Override
-            public void run() {
-                game.start();
-                System.exit(0);
-            }
-        }.start();
-    }
+//    public void start(BundleContext bundleContext) throws Exception {
+//        final Game game = createGame();
+//        tracker = new ServiceTracker<Plugin, Plugin>(bundleContext, Plugin.class, new PluginManager(game, bundleContext));
+//        tracker.open();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                game.start();
+//                System.exit(0);
+//            }
+//        }.start();
+//    }
 
-    public void stop(BundleContext bundleContext) throws Exception {
-        tracker.close();
-    }
+//    public void stop(BundleContext bundleContext) throws Exception {
+//        tracker.close();
+//    }
 
 }

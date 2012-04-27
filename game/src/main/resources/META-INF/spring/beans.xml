@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) TouK 2012.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="game" class="pl.touk.osgiworkshop.game.domain.Game"
+          p:world-ref="world" p:initPlaceName="Rozdroża" p:player-ref="player"
+          p:IO-ref="tcpInterface"/>
+
+    <bean id="world" class="pl.touk.osgiworkshop.game.domain.World">
+        <property name="places">
+            <util:list>
+                <ref bean="rozdroza"/>
+            </util:list>
+        </property>
+    </bean>
+
+    <bean id="rozdroza" class="pl.touk.osgiworkshop.game.impl.CrossroadsPlace" p:game-ref="game">
+        <constructor-arg index="0" ref="rozdrozaName"/>
+        <constructor-arg index="1" value="Jesteś na rozstaju dróg. Którędy podążysz?"/>
+    </bean>
+
+    <bean id="rozdrozaName" class="pl.touk.osgiworkshop.game.domain.Name" factory-method="valueWithLocomotiveFormOf">
+        <constructor-arg index="0" value="Rozdroża"/>
+        <constructor-arg index="1" value="na"/>
+        <constructor-arg index="2" value="Rozdroża"/>
+        <constructor-arg index="3">
+            <list/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="player" class="pl.touk.osgiworkshop.game.domain.Player">
+        <constructor-arg index="0" ref="playerName"/>
+        <constructor-arg index="1" value="${player.lifesCount}"/>
+        <property name="weapons">
+            <set>
+                 <ref bean="sztylet"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="playerName" class="pl.touk.osgiworkshop.game.domain.Name" factory-method="valueOf">
+        <constructor-arg index="0" value="${player.name}"/>
+        <constructor-arg index="1">
+            <list/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="sztylet" class="pl.touk.osgiworkshop.game.base.BaseWeapon">
+        <constructor-arg index="0" ref="sztyletName"/>
+        <constructor-arg index="1" value="${weapons.sztylet.accuracy}"/>
+        <constructor-arg index="2" value="${weapons.sztylet.strength}"/>
+    </bean>
+
+    <bean id="sztyletName" class="pl.touk.osgiworkshop.game.domain.Name" factory-method="valueOf">
+        <constructor-arg index="0" value="sztylet"/>
+        <constructor-arg index="1">
+            <list/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="tcpInterface" class="pl.touk.osgiworkshop.game.tcp.TcpInterface"
+          p:game-ref="game" p:port="${tcp.port}" destroy-method="close"/>
+
+    <bean id="pluginManager" class="pl.touk.osgiworkshop.game.plugin.PluginManager">
+        <constructor-arg ref="game"/>
+    </bean>
+
+    <ctx:property-placeholder properties-ref="gameProps"/>
+</beans>
+

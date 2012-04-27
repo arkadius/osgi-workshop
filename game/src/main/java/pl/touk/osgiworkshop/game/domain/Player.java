@@ -74,4 +74,10 @@ public class Player extends Creature {
     public void addWeapon(Weapon weapon) {
         weapons.add(weapon);
     }
+
+    // SPRING
+
+    public void setWeapons(Set<Weapon> weapons) {
+        this.weapons = weapons;
+    }
 }
