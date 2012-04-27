@@ -17,10 +17,25 @@ public class Player extends Creature {
     private int lifes = 1;
     private Set<Weapon> weapons = new HashSet<Weapon>();
     private Place currentPlace;
+    private Weapon currentWeapon;
 
     public Player(Name name, int lifes) {
         super(Name.valueOf("człowiek", "ludz", "ludź"), name);
         this.lifes = lifes;
+        setHealth(100);
+        setStrength(Config.getInstance().getDouble("player.initStrength"));
+        setAccuracy(Config.getInstance().getDouble("player.initAccuracy"));
+    }
+
+    @Override
+    public boolean decreaseHealth(int diff) {
+        super.decreaseHealth(diff);
+        if (isAlive()) {
+            return true;
+        } else {
+            takeOneLife();
+            return false;
+        }
     }
 
     /**
@@ -28,7 +43,8 @@ public class Player extends Creature {
      * @return if player still is alive
      */
     public boolean takeOneLife() {
-        return --lifes > 0 ;
+        lifes--;
+        return lifes > 0;
     }
 
     public void moveToPlace(Place newPlace) {
@@ -47,5 +63,15 @@ public class Player extends Creature {
         return currentPlace;
     }
 
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
+    }
 
+    public void setCurrentWeapon(Weapon currentWeapon) {
+        this.currentWeapon = currentWeapon;
+    }
+
+    public void addWeapon(Weapon weapon) {
+        weapons.add(weapon);
+    }
 }

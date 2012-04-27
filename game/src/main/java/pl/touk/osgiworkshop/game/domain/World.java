@@ -28,6 +28,14 @@ class World {
         return null;
     }
 
+    public List<String> getPlacesNames() {
+        List<String> names = new ArrayList<String>();
+        for (Place place : places.values()) {
+            names.add(place.getName().getValue());
+        }
+        return names;
+    }
+
     public List<Place> getPlacesOfNames(Collection<String> names) {
         List<Place> result = new ArrayList<Place>();
         for (String name : names) {
@@ -56,13 +64,13 @@ class World {
 
     // MUTATORS / ACCESSORS
 
-    void addPlaces(Collection<Place> places) {
+    void addPlaces(Collection<? extends Place> places) {
         for (Place place : places) {
             this.places.put(place.getName().getValue(), place);
         }
     }
 
-    void addCreatures(Collection<Creature> creatures) {
+    void addCreatures(Collection<? extends Creature> creatures) {
         this.creatures.addAll(creatures);
     }
 

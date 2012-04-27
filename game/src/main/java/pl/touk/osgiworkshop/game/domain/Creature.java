@@ -6,6 +6,11 @@ package pl.touk.osgiworkshop.game.domain;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
+import pl.touk.osgiworkshop.game.base.behave.DoNothing;
+import pl.touk.osgiworkshop.game.base.behave.HurtPlayer;
+import pl.touk.osgiworkshop.game.base.behave.PrintMessage;
+
+import java.util.Random;
 
 /**
  * @author arkadius
@@ -13,8 +18,9 @@ import com.google.common.collect.ComparisonChain;
 public class Creature implements Comparable<Creature> {
     private Name type;
     private Name name;
-    private int health = 100;
-    private double power = 1.0;
+    private int health = Config.getInstance().getInt("baseCreature.health");
+    private double strength = Config.getInstance().getDouble("baseCreature.strength");
+    private double accuracy = Config.getInstance().getDouble("baseCreature.accuracy");
 
     public Creature(Name type, Name name) {
         this.type = type;
@@ -25,12 +31,12 @@ public class Creature implements Comparable<Creature> {
         return (health -= diff) > 0;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public boolean isAlive() {
+        return health > 0;
     }
 
-    public void setPower(double power) {
-        this.power = power;
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public Name getType() {
@@ -45,8 +51,29 @@ public class Creature implements Comparable<Creature> {
         return health;
     }
 
-    public double getPower() {
-        return power;
+    public double getStrength() {
+        return strength;
+    }
+
+    public void setStrength(double strength) {
+        this.strength = strength;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(double accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public Behaviour attack(Player player, Place place) {
+        // default implementation
+        if (new Random().nextDouble() < accuracy) {
+            return new HurtPlayer((int) strength);
+        } else {
+            return new PrintMessage("Przeciwnik spudłował.");
+        }
     }
 
     @Override
@@ -76,10 +103,9 @@ public class Creature implements Comparable<Creature> {
     @Override
     public String toString() {
         return "Creature{" +
-                "type=" + getType() +
-                ", name=" + getName() +
-                ", health=" + health +
-                ", power=" + power +
+                "health=" + health +
+                ", name=" + name +
+                ", type=" + type +
                 '}';
     }
 }

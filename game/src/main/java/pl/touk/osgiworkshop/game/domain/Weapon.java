@@ -7,6 +7,16 @@ package pl.touk.osgiworkshop.game.domain;
 /**
  * @author arkadius
  */
-public interface Weapon {
-    boolean use(Creature creature, Place place);
+public abstract class Weapon {
+    private Name name;
+
+    public Weapon(Name name) {
+        this.name = name;
+    }
+
+    public abstract Behaviour use(Player player, Creature creature, Place place, String safeState);
+
+    public Name getName() {
+        return name;
+    }
 }

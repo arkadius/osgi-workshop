@@ -6,6 +6,7 @@ package pl.touk.osgiworkshop.game.domain;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
+import pl.touk.osgiworkshop.game.TextNormalizer;
 
 import java.util.LinkedHashSet;
 import static com.google.common.collect.Sets.*;
@@ -36,17 +37,20 @@ public class Name implements Comparable<Name> {
     }
 
     public boolean matches(String name) {
-        name = name.toLowerCase();
+        name = TextNormalizer.normalize(name);
         for (String synonym : synonyms) {
-            if (name.startsWith(synonym.toLowerCase()))
+            synonym = TextNormalizer.normalize(synonym);
+            if (name.startsWith(synonym))
                 return true;
         }
         return false;
     }
 
     public String getLocomotive() {
-        if (locomotiveForm != null) {
+        if (locomotiveForm != null && !locomotivePrefix.isEmpty()) {
             return locomotivePrefix + " " + locomotiveForm;
+        } else if (locomotiveForm != null) {
+            return locomotiveForm;
         } else {
             return "do " + getValue();
         }

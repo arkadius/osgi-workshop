@@ -18,8 +18,7 @@ public class Place implements Comparable<Place> {
     private Name name;
     private String description;
     private State associatedState;
-
-    public List<String> availablePlacesToGo = Collections.emptyList();
+    private List<String> availablePlacesToGo = Collections.emptyList();
 
     public Place(Name name, String description) {
         this.name = name;

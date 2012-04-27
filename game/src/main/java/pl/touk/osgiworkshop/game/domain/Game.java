@@ -6,6 +6,7 @@ package pl.touk.osgiworkshop.game.domain;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
+import pl.touk.osgiworkshop.game.TextNormalizer;
 import pl.touk.osgiworkshop.game.base.InitState;
 import pl.touk.osgiworkshop.game.base.behave.DoNothing;
 import pl.touk.osgiworkshop.game.base.behave.EndTheGame;
@@ -16,17 +17,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * @author arkadius
  */
 public class Game {
     private Map<String, State> states = new HashMap<String, State>();
+    private State initState;
     private State currentState;
-    private World world;
+    private World world = new World();
     private Player player;
     private Creature currentCreature;
     private Interface io;
     private boolean gameEnd;
+
+    Game() {}
 
     public void start() {
         currentState.introduce();
@@ -39,17 +45,23 @@ public class Game {
         printOutLine("KONIEC GRY");
     }
 
+    public void respawn() {
+        player.setHealth(100);
+        currentState = initState;
+        currentState.execute(null, null).execute(this);
+    }
+
     private Behaviour readAction() {
         io.printOut("> ");
         String line = readLine();
-        String[] arr = line.toLowerCase().split("\\s+");
+        String[] arr = TextNormalizer.normalize(line).split("\\s+");
         if (arr.length == 0 || arr.length == 1 && arr[0].isEmpty()) {
             printErrLine("Nie podałeś akcji!");
             showAvailableActions();
         } else if (arr[0].startsWith("pomoc")) {
             printErrLine("Wołasz o pomoc głupcze?!");
             showAvailableActions();
-        } else if (Sets.newHashSet("wyjdź", "wyjście", "koniec").contains(arr[0])) {
+        } else if (Sets.newHashSet("wyjdz", "wyjscie", "koniec").contains(arr[0])) {
             return new EndTheGame();
         } else {
             try {
@@ -63,11 +75,10 @@ public class Game {
     }
 
     private void showAvailableActions() {
-        printOutLine("Dostępne akcje to: " + Joiner.on(", ").join(currentState.getAvailableActions()) + ".");
-    }
-
-    public Name getPlayersName() {
-        return player.getName();
+        List<String> availableActions = newArrayList("pomoc", "koniec gry");
+        availableActions.addAll(currentState.getAvailableActions());
+        Collections.sort(availableActions);
+        printOutLine("Dostępne akcje to: " + Joiner.on(", ").join(availableActions) + ".");
     }
 
     public void endTheGame() {
@@ -94,6 +105,17 @@ public class Game {
         return world.getPlacesOfNames(names);
     }
 
+    public List<String> getPlacesNames() {
+        return world.getPlacesNames();
+    }
+
+    public void addPlaces(Collection<? extends Place> places) {
+        world.addPlaces(places);
+        for (Place place : places) {
+            addState(place.getAssociatedState());
+        }
+    }
+
     // STATES
 
     public void changeState(String id) {
@@ -105,6 +127,28 @@ public class Game {
         currentState = state;
         currentState.introduce();
     }
+
+    public void addStates(Collection<? extends State> states) {
+        for (State state : states) {
+            addState(state);
+        }
+    }
+
+    private void addState(State state) {
+        state.setGame(this);
+        states.put(state.getId(), state);
+    }
+
+    // CREATURES
+
+    public Creature getCreature(String type, String name) {
+        return world.getCreature(type, name);
+    }
+
+    public void addCreatures(Collection<? extends Creature> creatures) {
+        world.addCreatures(creatures);
+    }
+
 
     // I/O
 
@@ -123,34 +167,32 @@ public class Game {
 
     // MUTATORS / ACCESSORS
 
-    void setWorld(World world) {
-        this.world = world;
-    }
-
     void setPlayer(Player player) {
         this.player = player;
     }
 
     public void setInitPlaceName(String initPlaceName) {
-        State initial = new InitState(initPlaceName);
-        addState(initial);
-        currentState = initial;
-    }
-
-    void addStates(Collection<State> states) {
-        for (State state : states) {
-            addState(state);
-        }
-    }
-
-    public void addState(State state) {
-        state.setGame(this);
-        states.put(state.getId(), state);
+        initState = new InitState(initPlaceName);
+        addState(initState);
+        currentState = initState;
     }
 
     public void setIO(Interface io) {
         this.io = io;
     }
 
+    public void setCurrentCreature(Creature currentCreature) {
+        this.currentCreature = currentCreature;
+    }
+
+    public Creature getCurrentCreature() {
+        return currentCreature;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
     // TODO: add methods to remove
+
 }

@@ -12,24 +12,24 @@ import java.util.Collections;
  */
 public class GameBuilder {
     private String playerName = "Gracz";
-    private Collection<Place> places;
-    private Collection<State> additionalStates = Collections.emptyList();
-    private Collection<Creature> creatures = Collections.emptyList();
+    private Collection<? extends Place> places = Collections.emptyList();
+    private Collection<? extends State> additionalStates = Collections.emptyList();
+    private Collection<? extends Creature> creatures = Collections.emptyList();
+    private Collection<? extends Weapon> playerWeaponsOnStart = Collections.emptyList();
     private String initPlaceName;
 
 
     public Game createGame() {
         Game game = new Game();
-        game.setPlayer(new Player(Name.valueOf(playerName, "gracz"), Config.getInstance().getInt("player.lifesCount")));
-        for (Place place : places) {
-            game.addState(place.getAssociatedState());
+        Player player = new Player(Name.valueOf(playerName, "gracz"), Config.getInstance().getInt("player.lifesCount"));
+        for (Weapon weapon : playerWeaponsOnStart) {
+            player.addWeapon(weapon);
         }
+        game.setPlayer(player);
+        game.addPlaces(places);
         game.addStates(additionalStates);
+        game.addCreatures(creatures);
         game.setInitPlaceName(initPlaceName);
-        World world = new World();
-        world.addPlaces(places);
-        world.addCreatures(creatures);
-        game.setWorld(world);
         return game;
     }
 
@@ -42,30 +42,39 @@ public class GameBuilder {
         return this;
     }
 
-    public Collection<Place> getPlaces() {
+    public Collection<? extends Place> getPlaces() {
         return this.places;
     }
 
-    public GameBuilder setPlaces(Collection<Place> places) {
+    public GameBuilder setPlaces(Collection<? extends Place> places) {
         this.places = places;
         return this;
     }
 
-    public Collection<State> getAdditionalStates() {
+    public Collection<? extends State> getAdditionalStates() {
         return this.additionalStates;
     }
 
-    public GameBuilder setAdditionalStates(Collection<State> additionalStates) {
+    public GameBuilder setAdditionalStates(Collection<? extends State> additionalStates) {
         this.additionalStates = additionalStates;
         return this;
     }
 
-    public Collection<Creature> getCreatures() {
+    public Collection<? extends Creature> getCreatures() {
         return this.creatures;
     }
 
-    public GameBuilder setCreatures(Collection<Creature> creatures) {
+    public GameBuilder setCreatures(Collection<? extends Creature> creatures) {
         this.creatures = creatures;
+        return this;
+    }
+
+    public Collection<? extends Weapon> getPlayerWeaponsOnStart() {
+        return this.playerWeaponsOnStart;
+    }
+
+    public GameBuilder setPlayerWeaponsOnStart(Collection<? extends Weapon> playerWeaponsOnStart) {
+        this.playerWeaponsOnStart = playerWeaponsOnStart;
         return this;
     }
 

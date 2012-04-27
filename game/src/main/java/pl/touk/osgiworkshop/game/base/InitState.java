@@ -26,7 +26,7 @@ public class InitState extends State {
 
     @Override
     public void introduce() {
-        getGame().printOutLine("Witaj " + getGame().getPlayersName() + "!");
+        getGame().printOutLine("Witaj " + getGame().getPlayer().getName() + "!");
     }
 
     @Override

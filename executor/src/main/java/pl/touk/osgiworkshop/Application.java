@@ -25,7 +25,9 @@ public class Application {
 
         startBundle(framework, "game/target/dependency/guava-osgi-11.0.1.jar");
         startBundle(framework, "game/target/game-1.0.jar");
-        System.exit(0);
+//        Thread.sleep(2000);
+        startBundle(framework, "plugin/target/plugin-1.0.jar");
+//        System.exit(0);
     }
 
     private static void startBundle(Framework framework, String bundlePath) throws BundleException {

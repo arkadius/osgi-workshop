@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>pl.touk.osgiworkshop</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>plugin</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Bundle-Activator>pl.touk.osgiworkshop.testplugin.TestPluginActivator</Bundle-Activator>
+                            <Import-Package>
+                                org.osgi.framework,
+                                pl.touk.osgiworkshop.game,
+                                pl.touk.osgiworkshop.game.base,
+                                pl.touk.osgiworkshop.game.base.behave,
+                                pl.touk.osgiworkshop.game.plugin,
+                                pl.touk.osgiworkshop.game.domain,
+                                com.google.common.base,
+                                com.google.common.collect
+                            </Import-Package>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>game</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+
+</project>
